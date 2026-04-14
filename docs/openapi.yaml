@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  version: 1.0.1
+  title: Portfolio API
+  description: This is the documentation for the Portfolio API.
+  license:
+    name: ''
+    url: ''
+
+servers:
+  - url: https://api.portfolio.dev
+
+tags:
+  - name: Authentication
+    description: Authentication operations for users
+  - name: User
+    description: User management operations (registration, profile, etc.)
+  - name: Water
+    description: Operations related to water tracking.
+
+paths: {}

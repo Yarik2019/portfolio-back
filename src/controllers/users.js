@@ -1,4 +1,4 @@
-import { THIRTY_DAY, TWO_HOURS } from "../portfolio/portfolio.js";
+import { THIRTY_DAY } from "../portfolio/portfolio.js";
 
 import {
   getUser,
@@ -22,22 +22,15 @@ export const registerUserController = async (req, res, next) => {
 };
 
 export const loginUserController = async (req, res, next) => {
-  const userData = req.body;
-  const session = await loginUser(userData);
+  const { sessionId, refreshToken } = await loginUser(req.body);
 
-  res.cookie("refreshToken", session.refreshToken, {
+  res.cookie("sessionId", sessionId, {
     httpOnly: true,
     secure: true,
     sameSite: "None",
     expires: new Date(Date.now() + THIRTY_DAY),
   });
-  res.cookie("accessToken", session.accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    expires: new Date(Date.now() + TWO_HOURS),
-  });
-  res.cookie("sessionId", session._id, {
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: "None",
@@ -47,31 +40,18 @@ export const loginUserController = async (req, res, next) => {
   res.status(200).json({
     status: 200,
     message: "User logged in successfully",
-    data: { accessToken: session.accessToken },
+    data: {
+      sessionId,
+      // refreshToken,
+    },
   });
 };
 
 export const logoutUserController = async (req, res, next) => {
-  await logoutUser(req.cookies);
+  await logoutUser({ sessionId: req.cookies.sessionId });
 
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    path: "/",
-  });
-  res.clearCookie("sessionId", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    path: "/",
-  });
-  res.clearCookie("accessToken", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    path: "/",
-  });
+  res.clearCookie("sessionId");
+  res.clearCookie("refreshToken");
 
   res.status(204).end();
 };
@@ -87,34 +67,28 @@ export const getUserController = async (req, res, next) => {
   });
 };
 
-export const setupSession = async (res, session) => {
-  res.cookie("refreshToken", session.refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    expires: new Date(Date.now() + THIRTY_DAY),
-  });
-
-  res.cookie("sessionId", session._id, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    expires: new Date(Date.now() + THIRTY_DAY),
-  });
-};
-
 export const refreshTokenController = async (req, res) => {
-  const session = await refreshUserSession({
+  const { sessionId, refreshToken } = await refreshUserSession({
     sessionId: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
   });
 
-  setupSession(res, session);
+  res.cookie("sessionId", sessionId, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    expires: new Date(Date.now() + THIRTY_DAY),
+  });
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    expires: new Date(Date.now() + THIRTY_DAY),
+  });
 
   res.status(200).json({
     status: 200,
     message: "Session refreshed successfully",
-    data: { accessToken: session.accessToken },
   });
 };
 

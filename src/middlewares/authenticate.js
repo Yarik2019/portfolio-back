@@ -5,26 +5,26 @@ import { UsersCollection } from "../db/models/user.js";
 
 export const authentication = async (req, res, next) => {
   try {
-    const accessToken = req.cookies.accessToken;
+    const { sessionId } = req.cookies;
 
-    if (!accessToken) {
-      return next(createHttpError(401, "Access token is missing"));
+    if (!sessionId) {
+      return next(createHttpError(401, "No Session"));
     }
 
-    const session = await SessionCollection.findOne({
-      accessToken: accessToken,
-    });
+    const session = await SessionCollection.findById(sessionId).lean();
 
     if (!session) {
       return next(createHttpError(401, "Session not found"));
     }
-    const isAccessTokenExpired =
-      new Date() > new Date(session.accessTokenValidUntil);
-    if (isAccessTokenExpired) {
-      return next(createHttpError(401, "Access token has expired"));
+
+    if (new Date() > session.expiresAt) {
+      await SessionCollection.findByIdAndDelete(sessionId);
+      return next(createHttpError(401, "Session expired"));
     }
 
-    const user = await UsersCollection.findById(session.userId);
+    const user = await UsersCollection.findById(session.userId).select(
+      "-password",
+    );
 
     if (!user) {
       return next(createHttpError(401, "User not found"));

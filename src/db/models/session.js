@@ -4,26 +4,26 @@ const sessionSchema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
       required: true,
+      index: true,
     },
-    accessToken: {
+    refreshTokenHash: {
       type: String,
       required: true,
     },
-    refreshToken: {
-      type: String,
-      required: true,
-    },
-    accessTokenValidUntil: {
+
+    expiresAt: {
       type: Date,
       required: true,
+      index: true,
     },
-    refreshTokenValidUntil: {
-      type: Date,
-      required: true,
-    },
+
+    userAgent: String,
+    ip: String,
   },
   { timestamps: true, versionKey: false },
 );
+sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const SessionCollection = model("Session", sessionSchema);

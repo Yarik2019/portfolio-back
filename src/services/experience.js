@@ -42,14 +42,14 @@ export const addCard = (id, cardData) => {
   );
 };
 
-export const updateCard = (experienceId, cardId, cardData, userId) => {
+export const updateCard = (experienceId, cardId, cardData) => {
   const updataFields = {};
 
   Object.keys(cardData).forEach((key) => {
     updataFields[`cards.$.${key}`] = cardData[key];
   });
   return ExperienceCollection.findOneAndUpdate(
-    { _id: experienceId, "cards._id": cardId, userId },
+    { _id: experienceId, "cards._id": cardId, userId: cardData.userId },
     { $set: updataFields },
     { new: true },
   );
@@ -61,7 +61,7 @@ export const getOneCard = (portfolioId, userId) => {
   });
 };
 export const deleteCard = (experienceId, cardId, userId) => {
- return ExperienceCollection.findByIdAndUpdate(
+  return ExperienceCollection.findByIdAndUpdate(
     { _id: experienceId, userId },
     {
       $pull: { cards: { _id: cardId } },

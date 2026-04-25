@@ -8,7 +8,7 @@ import {
   addCard,
   updateCard,
   deleteCard,
-  getOneCard
+  getOneCard,
 } from "../services/experience.js";
 
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
@@ -107,9 +107,8 @@ export const updateCardController = async (req, res, next) => {
     };
   }
   const updateData = { ...dataBody, userId, image: imageUrl };
-
   const dataCard = await updateCard(experienceId, cardId, updateData);
-
+ console.log(dataCard);
   res.status(200).json({
     status: 200,
     message: "Card updated successfully",
@@ -124,23 +123,19 @@ export const deleteCardController = async (req, res, next) => {
 
   const experienceOneCard = await getOneCard(experienceId, userId);
 
-
   const existingCard = experienceOneCard.cards.id(cardId);
 
   const publicId = existingCard.image?.publicId;
 
-  if(publicId){
-    try{
+  if (publicId) {
+    try {
       await deleteFromCloudinary(publicId);
-    }catch(error){
-         console.error("Cloudinary delete error:", error.message);
+    } catch (error) {
+      console.error("Cloudinary delete error:", error.message);
     }
   }
 
   const deleteData = await deleteCard(experienceId, cardId, userId);
-  if (deleteData.image?.publicId) {
-    await deleteFromCloudinary(deleteData.image.publicId);
-  }
 
   if (!deleteData) {
     throw createHttpError(404, "Card not found");

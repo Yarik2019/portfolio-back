@@ -6,8 +6,8 @@ import { SessionCollection } from "../db/models/session.js";
 import { TWO_HOURS, THIRTY_DAY } from "../portfolio/portfolio.js";
 //  ---------------------------------
 export const createSession = async () => {
-  const accessToken = randomBytes(30).toString("base64");
-  const refreshToken = randomBytes(30).toString("base64");
+  const accessToken = randomBytes(30).toString("hex");
+  const refreshToken = randomBytes(30).toString("hex");
 
   return {
     accessToken,
@@ -18,12 +18,9 @@ export const createSession = async () => {
 };
 
 export const refreshUserSession = async ({ sessionId, refreshToken }) => {
-  const session = await SessionCollection.findOne({
-    _id: sessionId,
-    refreshToken: refreshToken,
-  });
+  const session = await SessionCollection.findById(sessionId);
 
-  if (!session) {
+  if (!session || session.refreshToken !== refreshToken) {
     throw createHttpError(404, "Authentication failed. Session not found");
   }
 
@@ -31,11 +28,11 @@ export const refreshUserSession = async ({ sessionId, refreshToken }) => {
     new Date() > new Date(session.refreshTokenValidUntil);
 
   if (isSessionTokenEpired) {
-    throw createHttpError(404, "Authentication failed. Session not found");
+    throw createHttpError(404, "Refresh token expired");
   }
 
-  session.accessToken = randomBytes(30).toString("base64");
-  session.refreshToken = randomBytes(30).toString("base64");
+  session.accessToken = randomBytes(30).toString("hex");
+  session.refreshToken = randomBytes(30).toString("hex");
   session.accessTokenValidUntil = new Date(Date.now() + TWO_HOURS);
   session.refreshTokenValidUntil = new Date(Date.now() + THIRTY_DAY);
 
@@ -74,18 +71,13 @@ export const loginUser = async (payload) => {
   return await SessionCollection.create({ userId: user._id, ...newSession });
 };
 // -------------------------------------
-export const logoutUser = async (cookies) => {
-  const { sessionId, refreshToken, accessToken } = cookies;
+export const logoutUser = async ({sessionId}) => {
 
-  if (!sessionId || !refreshToken || !accessToken) {
-    throw createHttpError(401, "Authentication failed. Session not found");
+  if (!sessionId) {
+    throw createHttpError(401, "No session");
   }
 
-  await SessionCollection.deleteOne({
-    _id: sessionId,
-    refreshToken,
-    accessToken,
-  });
+  await SessionCollection.findByIdAndDelete(sessionId);
 };
 
 //  ---------------------------------

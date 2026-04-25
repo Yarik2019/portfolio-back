@@ -30,6 +30,7 @@ export const setupServer = () => {
       },
     }),
   );
+  
   app.use(cors(corsOptions));
   app.use(cookieParser());
 

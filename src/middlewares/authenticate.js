@@ -5,40 +5,29 @@ import { UsersCollection } from "../db/models/user.js";
 
 export const authentication = async (req, res, next) => {
   try {
-    const authHeader = req.get("Authorization");
+    const accessToken = req.cookies.accessToken;
 
-    if (!authHeader) {
-      next(createHttpError(401, "Authorization header is missing"));
-      return;
+    if (!accessToken) {
+      return next(createHttpError(401, "Access token is missing"));
     }
 
-    const [bearer, token] = authHeader.split(" ");
-
-    if (bearer !== "Bearer" || !token) {
-      next(createHttpError(401, "Auth header should be of type Bearer"));
-      return;
-    }
-
-    const session = await SessionCollection.findOne({ accessToken: token });
+    const session = await SessionCollection.findOne({
+      accessToken: accessToken,
+    });
 
     if (!session) {
-      next(createHttpError(401, "Session not found"));
-      return;
+      return next(createHttpError(401, "Session not found"));
     }
-
     const isAccessTokenExpired =
       new Date() > new Date(session.accessTokenValidUntil);
-
     if (isAccessTokenExpired) {
-      next(createHttpError(401, "Access token has expired"));
-      return;
+      return next(createHttpError(401, "Access token has expired"));
     }
 
     const user = await UsersCollection.findById(session.userId);
 
     if (!user) {
-      next(createHttpError(401, "User not found"));
-      return;
+      return next(createHttpError(401, "User not found"));
     }
 
     req.user = user;

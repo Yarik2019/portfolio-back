@@ -15,12 +15,14 @@ export const setupServer = () => {
   app.use(express.json());
   const docs = swaggerDocs();
 
-  // const corsOptions = {
-  //   origin: ["http://localhost:5173", ""],
-  //   methods: "GET,POST,PATCH,DELETE",
-  //   allowedHeaders: "Content-Type,Authorization",
-  //   credentials: true,
-  // };
+  const corsOptions = {
+    origin: ["http://localhost:5173", "http://localhost:3000", "https://portfolio-back-oudh.onrender.com"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders:  ["Content-Type", "Authorization"],
+    credentials: true,
+  };
+  
+
   app.use(
     pino({
       transport: {
@@ -28,16 +30,17 @@ export const setupServer = () => {
       },
     }),
   );
-  app.use(cors());
-
+  app.use(cors(corsOptions));
   app.use(cookieParser());
 
-  app.use(router);
+  app.get("/", (req, res) => {
+    res.send("API is running");
+  });
 
   app.use("/api-docs", docs);
-  // app.get("/", (req, res) => {
-  //   res.send("API is running");
-  // });
+
+  app.use(router);
+  
   app.use("*", notFoundHandler);
 
   app.use(errorHandler); 

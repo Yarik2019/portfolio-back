@@ -45,7 +45,6 @@ export const updateHomeController = async (req, res, next) => {
   const userId = req.user._id;
   const file = req.file;
 
-
   const existingHome = await getHomeById(homeId);
 
   if (!existingHome) {
@@ -53,7 +52,6 @@ export const updateHomeController = async (req, res, next) => {
   }
 
   let imageUrl = existingHome.image;
-  console.log(imageUrl);
 
   if (file) {
     const uploadResult = await uploadToCloudinary(file.path);

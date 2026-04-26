@@ -32,6 +32,10 @@ export const deleteExperience = (id, userId) => {
   return ExperienceCollection.findByIdAndDelete({ _id: id, userId });
 };
 
+export const getOneExperience = (id, userId) => {
+  return ExperienceCollection.findOne({ _id: id, userId });
+};
+
 export const addCard = (id, cardData) => {
   return ExperienceCollection.findOneAndUpdate(
     { _id: id, userId: cardData.userId },

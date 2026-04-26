@@ -6,6 +6,7 @@ import {
   updateExperience,
   deleteExperience,
   addCard,
+  getOneExperience,
   updateCard,
   deleteCard,
   getOneCard,
@@ -71,6 +72,7 @@ export const postCardController = async (req, res, next) => {
   const userId = req.user._id;
   const dataBody = req.body;
   const file = req.file;
+
   let imageUrl = null;
 
   if (file) {
@@ -97,7 +99,10 @@ export const updateCardController = async (req, res, next) => {
   const dataBody = req.body;
   const userId = req.user._id;
   const file = req.file;
-  let imageUrl = null;
+
+  const existingExperience = await getOneExperience(experienceId, userId);
+
+  let imageUrl = existingExperience.image;
 
   if (file) {
     const uploadResult = await uploadToCloudinary(file.path);
@@ -105,10 +110,20 @@ export const updateCardController = async (req, res, next) => {
       url: uploadResult.url,
       publicId: uploadResult.publicId,
     };
+
+    if (existingExperience.image?.publicId) {
+      await deleteFromCloudinary(existingExperience.image.publicId);
+    }
   }
-  const updateData = { ...dataBody, userId, image: imageUrl };
+  
+  const updateData = {
+    ...dataBody,
+    userId,
+    image: file ? imageUrl : existingExperience.image,
+  };
+
   const dataCard = await updateCard(experienceId, cardId, updateData);
- console.log(dataCard);
+
   res.status(200).json({
     status: 200,
     message: "Card updated successfully",

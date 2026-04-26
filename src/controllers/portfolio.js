@@ -9,6 +9,7 @@ import {
   updateCard,
   getOneCard,
   deleteCard,
+  getOnePortfolio,
 } from "../services/portfolio.js";
 
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
@@ -104,7 +105,10 @@ export const patchCardController = async (req, res, next) => {
   const userId = req.user._id;
   const updateCardBody = req.body;
   const file = req.file;
-  let imageUrl = null;
+
+  const existingPortfolio = await getOnePortfolio(portfoilioId, userId);
+
+  let imageUrl = existingPortfolio.image;
 
   if (file) {
     const uploadResult = await uploadToCloudinary(file.path);
@@ -112,9 +116,17 @@ export const patchCardController = async (req, res, next) => {
       url: uploadResult.url,
       publicId: uploadResult.publicId,
     };
+
+    if (existingPortfolio.image?.publicId) {
+      await deleteFromCloudinary(existingPortfolio.image.publicId);
+    }
   }
 
-  const updatedCardData = { ...updateCardBody, userId, image: imageUrl };
+  const updatedCardData = {
+    ...updateCardBody,
+    userId,
+    image: file ? imageUrl : existingPortfolio.image,
+  };
 
   const updatedCard = await updateCard(portfoilioId, cardId, updatedCardData);
 

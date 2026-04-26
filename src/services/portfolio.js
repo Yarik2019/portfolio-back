@@ -22,6 +22,10 @@ export const deletePortfolio = (id, userId) => {
   return PortfolioCollection.findByIdAndDelete({ _id: id, userId });
 };
 
+export const getOnePortfolio = (id, userId) => {
+  return PortfolioCollection.findOne({ _id: id, userId });
+};
+
 export const addCard = (id, cardData) => {
   return PortfolioCollection.findOneAndUpdate(
     { _id: id, userId: cardData.userId },

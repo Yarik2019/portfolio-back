@@ -18,7 +18,7 @@ export const setupServer = () => {
   const corsOptions = {
     origin: ["http://localhost:5173", "http://localhost:3000", "https://portfolio-back-oudh.onrender.com"],
     methods: ["GET", "POST", "PATCH", "DELETE"],
-    allowedHeaders:  ["Content-Type", "Authorization"],
+    // allowedHeaders:  ["Content-Type", "Authorization"],    
     credentials: true,
   };
   

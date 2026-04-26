@@ -30,8 +30,8 @@ export const createContactController = async (req, res, next) => {
   res.status(201).json({
     status: 201,
     message: "Contact created successfully",
-    data: createdContact,
-  });
+    data: createdContact
+  }); 
 };
 
 export const patchContactController = async (req, res, next) => {

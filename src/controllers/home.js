@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
 
-import { getHome, postHome, updateHome, deleteHome } from "../services/home.js";
+import { getHome, getHomeById, postHome, updateHome, deleteHome } from "../services/home.js";
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 import { deleteFromCloudinary } from "../utils/deleteFromCloudinary.js";
 
@@ -44,7 +44,16 @@ export const updateHomeController = async (req, res, next) => {
   const updateData = req.body;
   const userId = req.user._id;
   const file = req.file;
-  let imageUrl = null;
+
+
+  const existingHome = await getHomeById(homeId);
+
+  if (!existingHome) {
+    throw createHttpError(404, "Home data not found");
+  }
+
+  let imageUrl = existingHome.image;
+  console.log(imageUrl);
 
   if (file) {
     const uploadResult = await uploadToCloudinary(file.path);
@@ -52,9 +61,14 @@ export const updateHomeController = async (req, res, next) => {
       url: uploadResult.url,
       publicId: uploadResult.publicId,
     };
+
+    if(existingHome.image?.publicId) {
+      await deleteFromCloudinary(existingHome.image.publicId);
+    }
   }
 
-  const homeUpdateData = { ...updateData, userId, image: imageUrl };
+
+  const homeUpdateData = {...updateData, userId, image: file ? imageUrl : existingHome.image };
 
   const dataHome = await updateHome(homeId, homeUpdateData, { new: true });
 

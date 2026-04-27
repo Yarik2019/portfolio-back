@@ -16,12 +16,15 @@ export const setupServer = () => {
   const docs = swaggerDocs();
 
   const corsOptions = {
-    origin: ["http://localhost:5173", "http://localhost:3000", "https://portfolio-back-oudh.onrender.com", "https://admin-portfolio-dashboard-front-g9f.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://admin-portfolio-dashboard-front-g9f.vercel.app",
+    ],
     methods: ["GET", "POST", "PATCH", "DELETE"],
-    // allowedHeaders:  ["Content-Type", "Authorization"],    
+    // allowedHeaders:  ["Content-Type", "Authorization"],
     credentials: true,
   };
-  
 
   app.use(
     pino({
@@ -30,7 +33,7 @@ export const setupServer = () => {
       },
     }),
   );
-  
+
   app.use(cors(corsOptions));
   app.use(cookieParser());
 
@@ -41,11 +44,11 @@ export const setupServer = () => {
   app.use("/api-docs", docs);
 
   app.use(router);
-  
+
   app.use("*", notFoundHandler);
 
-  app.use(errorHandler); 
-   
+  app.use(errorHandler);
+
   app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`);
   });

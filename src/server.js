@@ -16,9 +16,14 @@ export const setupServer = () => {
   const docs = swaggerDocs();
 
   const corsOptions = {
-    origin: "*",
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://sensational-dusk-778c04.netlify.app",
+      "https://admin-portfolio-dashboard-front-g9f.vercel.app",
+    ],
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders:  ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   };
 
@@ -31,6 +36,7 @@ export const setupServer = () => {
   );
 
   app.use(cors(corsOptions));
+  // app.options("*", cors(corsOptions));
   app.use(cookieParser());
 
   app.get("/", (req, res) => {

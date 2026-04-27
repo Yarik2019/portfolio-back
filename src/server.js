@@ -16,7 +16,7 @@ export const setupServer = () => {
   const docs = swaggerDocs();
 
   const corsOptions = {
-    origin: "https://admin-portfolio-dashboard-front-g9f.vercel.app",
+    origin: "*",
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders:  ["Content-Type", "Authorization"],
     credentials: true,

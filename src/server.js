@@ -16,13 +16,7 @@ export const setupServer = () => {
   const docs = swaggerDocs();
 
   const corsOptions = {
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "https://portfolio-back-oudh.onrender.com",
-      "https://sensational-dusk-778c04.netlify.app",
-      "https://admin-portfolio-dashboard-front-g9f.vercel.app",
-    ],
+    origin: "https://admin-portfolio-dashboard-front-g9f.vercel.app",
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders:  ["Content-Type", "Authorization"],
     credentials: true,

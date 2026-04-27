@@ -21,8 +21,8 @@ export const setupServer = () => {
       "http://localhost:3000",
       "https://admin-portfolio-dashboard-front-g9f.vercel.app",
     ],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    // allowedHeaders:  ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders:  ["Content-Type", "Authorization"],
     credentials: true,
   };
 
@@ -33,8 +33,9 @@ export const setupServer = () => {
       },
     }),
   );
-  app.use(cookieParser());
+  
   app.use(cors(corsOptions));
+  app.use(cookieParser());
 
   app.get("/", (req, res) => {
     res.send("API is running");

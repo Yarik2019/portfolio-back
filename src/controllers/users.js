@@ -27,13 +27,15 @@ export const loginUserController = async (req, res, next) => {
   res.cookie("sessionId", sessionId, {
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: "none",
+    path: "/",
     expires: new Date(Date.now() + THIRTY_DAY),
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: "none",
+    path: "/",
     expires: new Date(Date.now() + THIRTY_DAY),
   });
 
@@ -50,8 +52,19 @@ export const loginUserController = async (req, res, next) => {
 export const logoutUserController = async (req, res, next) => {
   await logoutUser({ sessionId: req.cookies.sessionId });
 
-  res.clearCookie("sessionId");
-  res.clearCookie("refreshToken");
+  res.clearCookie("sessionId", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
 
   res.status(204).end();
 };
@@ -76,13 +89,15 @@ export const refreshTokenController = async (req, res) => {
   res.cookie("sessionId", sessionId, {
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: "none",
+    path: "/",
     expires: new Date(Date.now() + THIRTY_DAY),
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: "none",
+    path: "/",
     expires: new Date(Date.now() + THIRTY_DAY),
   });
 

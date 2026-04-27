@@ -33,9 +33,8 @@ export const setupServer = () => {
       },
     }),
   );
-
-  app.use(cors(corsOptions));
   app.use(cookieParser());
+  app.use(cors(corsOptions));
 
   app.get("/", (req, res) => {
     res.send("API is running");

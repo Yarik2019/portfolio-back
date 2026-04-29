@@ -21,6 +21,8 @@ export const setupServer = () => {
       "http://localhost:3000",
       "https://sensational-dusk-778c04.netlify.app",
       "https://admin-portfolio-dashboard-front-g9g.vercel.app",
+      "https://preeminent-khapse-7f54d7.netlify.app",
+      "https://yt-react-one-portfolio-six.vercel.app",
     ],
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

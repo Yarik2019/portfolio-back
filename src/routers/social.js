@@ -15,41 +15,41 @@ import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 import { validateBody } from "../middlewares/validateBody.js";
 import { isValidId } from "../middlewares/isValidId.js";
 import {
-  contactValidation,
-  updateContactValidation,
-} from "../validation/contact.js";
+  socialValidation,
+  updateSocialValidation,
+} from "../validation/social.js";
 import {
-  getContactsController,
-  createContactController,
-  patchContactController,
-  deleteContactController,
-} from "../controllers/contact.js";
+  getSocialController,
+  createSocialController,
+  patchSocialController,
+  deleteSocialController,
+} from "../controllers/social.js";
 import { authentication } from "../middlewares/authenticate.js";
 
 const router = Router();
 
-router.get("/", ctrlWrapper(getContactsController));
+router.get("/", ctrlWrapper(getSocialController));
 
 router.post(
   "/",
   authentication,
-  validateBody(contactValidation),
-  ctrlWrapper(createContactController),
+  validateBody(socialValidation),
+  ctrlWrapper(createSocialController),
 );
 
 router.patch(
   "/:id",
   authentication,
   isValidId,
-  validateBody(updateContactValidation),
-  ctrlWrapper(patchContactController),
+  validateBody(updateSocialValidation),
+  ctrlWrapper(patchSocialController),
 );
 
 router.delete(
   "/:id",
   authentication,
   isValidId,
-  ctrlWrapper(deleteContactController),
+  ctrlWrapper(deleteSocialController),
 );
 
 export default router;

@@ -18,8 +18,9 @@ export const SMTP = {
   SMTP_PORT: "SMTP_PORT",
   SMTP_USER: "SMTP_USER",
   SMTP_PASS: "SMTP_PASS",
-  MAIL_TO: "MAIL_TO"
+  MAIL_TO: "MAIL_TO",
 };
+export const APP_URL = "APP_URL";
 
 export const TWO_HOURS = 2 * 60 * 60 * 1000;
 export const THIRTY_DAY = 30 * 24 * 60 * 60 * 1000;

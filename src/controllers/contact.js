@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { transporter } from "../utils/mail.js";
 import { env } from "../utils/env.js";
 import { ContactCollection } from "../db/models/contact.js";
+import { APP_URL, SMTP } from "../portfolio/portfolio.js";
 
 export const sendContactEmailController = async (req, res) => {
   try {
@@ -22,10 +23,10 @@ export const sendContactEmailController = async (req, res) => {
       verified: false,
     });
 
-    const confirmLink = `${env("APP_URL")}/confirm?token=${token}`;
+    const confirmLink = `${env(APP_URL)}/confirm?token=${token}`;
 
     await transporter.sendMail({
-      from: `Portfolio Form <${env("MAIL_TO")}>`,
+      from: `Portfolio Form <${env(SMTP.MAIL_TO)}>`,
       to: email,
       replyTo: email,
       subject: "Confirm your email",
@@ -66,8 +67,8 @@ export const confirmEmailController = async (req, res) => {
     await contact.save();
 
     await transporter.sendMail({
-      from: `Portfolio <${env("MAIL_TO")}>`,
-      to: env("MAIL_TO"),
+      from: `Portfolio <${env(SMTP.MAIL_TO)}>`,
+      to: env(SMTP.MAIL_TO),
       replyTo: contact.email,
       subject: `New message from ${contact.name}`,
       html: `

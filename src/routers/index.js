@@ -1,6 +1,7 @@
 import { Router } from "express";
 import aboutRouter from "./about.js";
 import socialRouter from "./social.js";
+import contactRouter from "./contact.js";
 import homeRouter from "./home.js";
 import experienceRouter from "./experience.js";
 import portfolioRouter from "./portfolio.js";
@@ -13,6 +14,7 @@ router.use("/social", socialRouter);
 router.use("/home", homeRouter);
 router.use("/experience", experienceRouter);
 router.use("/portfolio", portfolioRouter);
+router.use("/contact", contactRouter);
 router.use("/users", usersRouter);
 // router.use('/portfolio',);
 // router.use('/experience',);

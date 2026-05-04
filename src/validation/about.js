@@ -1,13 +1,13 @@
 import Joi from "joi";
 
 export const aboutValidation = Joi.object({
-  title: Joi.string().min(2).max(100).required(),
-  subTitle: Joi.string().min(2).max(2000).required(),
-  description: Joi.string().min(10).max(2000).required()
+  title: Joi.string().min(2).max(300).required(),
+  subTitle: Joi.string().min(2).max(3000).required(),
+  description: Joi.string().min(10).max(3000).required()
 }); 
 
 export const updateAboutValidation = Joi.object({
-  title: Joi.string().min(2).max(100),
-  subTitle: Joi.string().min(2).max(2000),
-  description: Joi.string().min(10).max(2000)
+  title: Joi.string().min(2).max(300),
+  subTitle: Joi.string().min(2).max(3000),
+  description: Joi.string().min(10).max(3000)
 });
